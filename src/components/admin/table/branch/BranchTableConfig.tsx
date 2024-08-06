@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { DataTableColumnHeader } from '@/components/defaults/table/DataTableColumnHeader';
 import { DataTableRowActions } from './BranchTableRowActions';
 import Typography from '@/components/defaults/Typography';
-import { TableBranch } from '@/shared/schema/table/admin/branchSchema';
+import { TableBranch } from '@/shared/schema/branchSchema';
 
 export const branchColumns: ColumnDef<TableBranch>[] = [
   {
@@ -19,7 +19,10 @@ export const branchColumns: ColumnDef<TableBranch>[] = [
       return (
         <div className="flex gap-2">
           <div
-            className={`size-6 rounded-full border border-white bg-[${gradientColor}]`}
+            className={`size-6 rounded-full border border-white`}
+            style={{
+              backgroundColor: gradientColor,
+            }}
           ></div>
           <Typography> {row.getValue('branchName')}</Typography>
         </div>

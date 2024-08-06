@@ -1,16 +1,34 @@
 import React from 'react';
 import { z } from 'zod';
-import { updateAccountSchema } from '../schema/accountSchema';
-import { addBranchSchema } from '../schema/branchSchema';
+import { tableProductSchema } from '../schema/productSchema';
+import { tableBranchSchema } from '../schema/branchSchema';
+import { tableProductTypesSchema } from '../schema/productTypesSchema';
+import { tableAccountSchema } from '../schema/accountSchema';
+import { tableCompetitorSchema } from '../schema/competitorSchema';
 
-export interface AccountFormType {
+export interface AccountFormProps {
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  user?: z.infer<typeof updateAccountSchema>;
+  user?: z.infer<typeof tableAccountSchema>;
 }
 
-export interface BranchFormType {
+export interface ProductTypesFormProps {
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  branch?: z.infer<typeof addBranchSchema>;
+  productTypes?: z.infer<typeof tableProductTypesSchema>;
+}
+
+export interface ProductProps {
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  product?: z.infer<typeof tableProductSchema>;
+}
+
+export interface BranchFormProps {
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  branch?: z.infer<typeof tableBranchSchema>;
+}
+
+export interface CompetitorProps {
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  competitor?: z.infer<typeof tableCompetitorSchema>;
 }
 
 export interface DialogTemplateType {

@@ -17,7 +17,6 @@ export const branchApiSlice = apiSlice.injectEndpoints({
           id
         )}`;
       },
-      providesTags: (_, __, id: string) => [{ type: 'Branch', id }],
     }),
     getBranches: builder.query({
       query: (data: QueryParams) => {

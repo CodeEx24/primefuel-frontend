@@ -33,12 +33,13 @@ const SelectFieldLocation: React.FC<SelectFieldLocationProps> = ({
   placeholder,
   name,
   control,
-  data,
+  data = [],
   codeField,
   handleValueChange,
 }) => {
   // Create a mapping from name to the specified code field
   const nameToCodeMap = React.useMemo(() => {
+    if (!data) return {};
     return data.reduce((map, item) => {
       map[item.name] = item[codeField]; // Access the specified code field
       return map;
@@ -50,11 +51,10 @@ const SelectFieldLocation: React.FC<SelectFieldLocationProps> = ({
 
   React.useEffect(() => {
     // When fieldValue changes, look up the code and call handleValueChange
-    if (fieldValue[name] && nameToCodeMap[fieldValue[name]]) {
-      console.log('handleValueCHange: ', name);
+    if (nameToCodeMap && fieldValue[name] && nameToCodeMap[fieldValue[name]]) {
       handleValueChange(name, nameToCodeMap[fieldValue[name]]);
     }
-  }, []);
+  }, [fieldValue, name, nameToCodeMap, handleValueChange]);
 
   return (
     <FormField
@@ -71,7 +71,7 @@ const SelectFieldLocation: React.FC<SelectFieldLocationProps> = ({
               handleValueChange(name, code); // Pass the code to handleValueChange
             }}
             defaultValue={field.value}
-            // disabled={disabled}
+            disabled={data.length === 0}
           >
             <FormControl>
               <SelectTrigger>

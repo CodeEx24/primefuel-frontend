@@ -112,10 +112,8 @@ const tablePaginationSlice = createSlice({
       }>
     ) => {
       const { name, order } = action.payload;
-      console.log('title, value: ', name, order);
       // Clear sorting if name is missing or order is invalid
       if (!name || (order !== 'asc' && order !== 'desc')) {
-        console.log('INSIDE DELETE 1');
         delete state.sorting.name;
         delete state.sorting.order;
         return;
@@ -123,11 +121,9 @@ const tablePaginationSlice = createSlice({
 
       // Reset sorting if it is already set with the same value
       if (state.sorting.name === name && state.sorting.order === order) {
-        console.log('INSIDE DELETE 2');
         delete state.sorting.name;
         delete state.sorting.order;
       } else {
-        console.log('INSIDE DELETE 3');
         // Set sorting with new order
         state.sorting['name'] = name;
         state.sorting['order'] = order;

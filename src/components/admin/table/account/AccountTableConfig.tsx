@@ -3,12 +3,12 @@ import { ColumnDef } from '@tanstack/react-table';
 // import { Badge } from '@/components/ui/badge';
 
 // import { labels, priorities, statuses } from './data/data';
-import { TableAccount } from '@/shared/schema/table/admin/accountSchema';
 import { DataTableColumnHeader } from '@/components/defaults/table/DataTableColumnHeader';
 import { DataTableRowActions } from './AccountTableRowActions';
 import Typography from '@/components/defaults/Typography';
 import { roles, statuses } from './DataOptions';
 import { STATUS } from '@/shared/constants/ROLES';
+import { TableAccount } from '@/shared/schema/accountSchema';
 
 export const accountColumns: ColumnDef<TableAccount>[] = [
   {

@@ -25,7 +25,6 @@ const SelectRegion: React.FC<SelectRegionProps> = ({ control, onChange }) => {
   const matchedItem = items.find(
     (item: { name: string; code: string }) => item.name === fieldValue.region
   );
-  console.log('matchedItem: ', matchedItem);
   return (
     <div>
       {regions && items.length > 0 && matchedItem ? (

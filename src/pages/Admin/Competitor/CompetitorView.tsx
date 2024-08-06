@@ -1,21 +1,65 @@
+import { competitorListColumns } from '@/components/admin/table/competitor/CompetitorTableConfig';
+import { CompetitorTableToolbar } from '@/components/admin/table/competitor/CompetitorTableToolbar';
+import { DataTable } from '@/components/defaults/table/DataTable';
 import Typography from '@/components/defaults/Typography';
-import { Input } from '@/components/ui/input';
+import { useGetCompetitorsQuery } from '@/pages/api/competitorApiSlice';
+import {
+  getFilters,
+  getPagination,
+  getRefetchStatus,
+  getSorting,
+  setPaginationDetails,
+  setRefetchData,
+} from '@/shared/lib/features/paginationSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function CompetitorView() {
+  const dispatch = useDispatch();
+  const pagination = useSelector(getPagination);
+  const filters = useSelector(getFilters);
+  const sorting = useSelector(getSorting);
+  const refetchStatus = useSelector(getRefetchStatus);
+
+  const { data: competitorDetails, refetch } = useGetCompetitorsQuery({
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    filters: filters,
+    sorting: sorting,
+  });
+
+  useEffect(() => {
+    if (competitorDetails?.data?.competitors) {
+      dispatch(
+        setPaginationDetails({
+          pagination: competitorDetails.data.pagination,
+          pageCount: competitorDetails.data.pageCount,
+          totalRecords: competitorDetails.data.totalRecords,
+        })
+      );
+    }
+  }, [competitorDetails, dispatch]);
+
+  useEffect(() => {
+    if (refetchStatus) {
+      refetch();
+      dispatch(setRefetchData());
+    }
+  }, [refetchStatus, refetch, dispatch]);
+
   return (
-    <div className="space-y-4 w-full">
-      <Typography variant="heading3" tag="h3">
-        Competitor
-      </Typography>
-      <div className="md:flex  justify-between w-full space-y-2 md:space-y-0 md:gap-4">
-        <Input
-          placeholder="Search"
-          className="text-foreground w-full md:w-4/12"
-        ></Input>
-        <div className="md:flex space-y-2 md:space-y-0 md:gap-4 md:w-8/12">
-          <Input placeholder="Branch" className="text-foreground"></Input>
-          <Input placeholder="Product" className="text-foreground"></Input>
-        </div>
+    <div className="space-y-4 w-full ">
+      <div className="flex justify-between">
+        <Typography variant="heading3" tag="h3">
+          Competitors
+        </Typography>
+      </div>
+      <div className="">
+        <DataTable
+          columns={competitorListColumns}
+          data={competitorDetails?.data?.competitors || []}
+          ToolbarComponent={CompetitorTableToolbar}
+        />
       </div>
     </div>
   );

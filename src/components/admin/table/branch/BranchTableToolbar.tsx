@@ -6,11 +6,11 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import { DataTableViewOptions } from '@/components/defaults/table/DataTableViewOptions';
 import { useDispatch } from 'react-redux';
 import { setFilters } from '@/shared/lib/features/paginationSlice';
-import { AddAccountDialog } from '../../dialog/AddAcountDialog';
 import { debounce } from '@/lib/debounce';
 import { useMemo, useState } from 'react';
 import { accountFilterConfig } from './BranchTableConfig';
-import AddBranchDialog from '../../dialog/AddBranchDialog';
+import BranchForm from '../../forms/BranchForm';
+import { AddEntityButton } from '../../button/AddEntityButton';
 
 interface BranchTableToolbarProps<TData> {
   table: Table<TData>;
@@ -64,7 +64,12 @@ export function BranchTableToolbar<TData>({
         )}
         <div className="flex gap-2">
           <DataTableViewOptions table={table} />
-          <AddBranchDialog />
+          <AddEntityButton
+            FormComponent={BranchForm}
+            buttonLabel="Add Branch"
+            dialogTitle="Add Branch"
+            dialogDescription="Add the branch details below by changing values."
+          />
         </div>
       </div>
     </>

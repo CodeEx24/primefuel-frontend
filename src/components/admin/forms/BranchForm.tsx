@@ -1,22 +1,20 @@
-import { FormInputText } from '@/components/defaults/FormInputText';
+import { FormInputText } from '@/components/defaults/forms/FormInputText';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { TOAST_TYPE } from '@/shared/constants/TOAST';
 import { useCustomToast } from '@/shared/hooks/useCustomToast';
 import { ErrorResponse } from '@/shared/interface/ErrorType';
-import { addBranchSchema } from '@/shared/schema/branchSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { FormColorPicker } from '@/components/defaults/FormColorPicker';
+import { FormColorPicker } from '@/components/defaults/forms/FormColorPicker';
 import { useState } from 'react';
 
 import {
   useAddBranchMutation,
   useUpdateBranchMutation,
 } from '@/pages/api/branchApiSlice';
-import { BranchFormType } from '@/shared/interface/DialogFormType';
 
 import {
   useGetBarangaysQuery,
@@ -25,12 +23,18 @@ import {
   useGetRegionsQuery,
 } from '@/pages/api/locationsApiSlice';
 import SelectFieldLocation from '../select/SelectFieldLocation';
+import { setRefetchData } from '@/shared/lib/features/paginationSlice';
+import { useDispatch } from 'react-redux';
+import { branchSchema } from '@/shared/schema/branchSchema';
+import { BranchFormProps } from '@/shared/interface/DialogFormType';
 
-export default function BranchForm({ setShowDialog, branch }: BranchFormType) {
+export default function BranchForm({ setShowDialog, branch }: BranchFormProps) {
   const { showToast } = useCustomToast();
   // Post request
   const [addBranchData] = useAddBranchMutation();
   const [updateBranchData] = useUpdateBranchMutation();
+
+  const dispatch = useDispatch();
 
   const [locationParams, setLocationParams] = useState({
     region: '',
@@ -40,8 +44,8 @@ export default function BranchForm({ setShowDialog, branch }: BranchFormType) {
 
   const { region, province, municipality } = locationParams;
 
-  const addBranchForm = useForm<z.infer<typeof addBranchSchema>>({
-    resolver: zodResolver(addBranchSchema),
+  const addBranchForm = useForm<z.infer<typeof branchSchema>>({
+    resolver: zodResolver(branchSchema),
     defaultValues: {
       branchName: branch?.branchName ?? '',
       region: branch?.region ?? '',
@@ -54,13 +58,14 @@ export default function BranchForm({ setShowDialog, branch }: BranchFormType) {
 
   const { handleSubmit, control } = addBranchForm;
 
-  const onSubmit = async (data: z.infer<typeof addBranchSchema>) => {
+  const onSubmit = async (data: z.infer<typeof branchSchema>) => {
     try {
       if (!branch) {
         const result = await addBranchData(data).unwrap();
 
         setShowDialog(false);
         showToast(TOAST_TYPE.SUCCESS, result.message);
+        dispatch(setRefetchData());
       } else {
         const result = await updateBranchData({
           id: branch?._id,
@@ -68,6 +73,7 @@ export default function BranchForm({ setShowDialog, branch }: BranchFormType) {
         }).unwrap();
         setShowDialog(false);
         showToast(TOAST_TYPE.SUCCESS, result?.message);
+        dispatch(setRefetchData());
       }
     } catch (error: unknown) {
       const axiosError = error as ErrorResponse;
@@ -109,53 +115,45 @@ export default function BranchForm({ setShowDialog, branch }: BranchFormType) {
             placeholder="Branch Name"
           />
 
-          {regions && (
-            <SelectFieldLocation
-              label="Region"
-              placeholder="Select a region"
-              name="region"
-              control={control}
-              data={regions}
-              codeField="reg_code"
-              handleValueChange={handleValueChange}
-            />
-          )}
+          <SelectFieldLocation
+            label="Region"
+            placeholder="Select a region"
+            name="region"
+            control={control}
+            data={regions}
+            codeField="reg_code"
+            handleValueChange={handleValueChange}
+          />
 
-          {provinces && (
-            <SelectFieldLocation
-              label="Provinces"
-              placeholder="Select a provinces"
-              name="province"
-              control={control}
-              data={provinces}
-              codeField="prov_code"
-              handleValueChange={handleValueChange}
-            />
-          )}
+          <SelectFieldLocation
+            label="Provinces"
+            placeholder="Select a provinces"
+            name="province"
+            control={control}
+            data={provinces}
+            codeField="prov_code"
+            handleValueChange={handleValueChange}
+          />
 
-          {municipalities && (
-            <SelectFieldLocation
-              label="Municipality"
-              placeholder="Select a municipality"
-              name="municipality"
-              control={control}
-              data={municipalities}
-              codeField="mun_code"
-              handleValueChange={handleValueChange}
-            />
-          )}
+          <SelectFieldLocation
+            label="Municipality"
+            placeholder="Select a municipality"
+            name="municipality"
+            control={control}
+            data={municipalities}
+            codeField="mun_code"
+            handleValueChange={handleValueChange}
+          />
 
-          {barangays && (
-            <SelectFieldLocation
-              label="Barangay"
-              placeholder="Select a barangay"
-              name="barangay"
-              control={control}
-              data={barangays}
-              codeField="bar_code"
-              handleValueChange={handleValueChange}
-            />
-          )}
+          <SelectFieldLocation
+            label="Barangay"
+            placeholder="Select a barangay"
+            name="barangay"
+            control={control}
+            data={barangays}
+            codeField="bar_code"
+            handleValueChange={handleValueChange}
+          />
 
           <FormColorPicker
             label="Gradient Color"

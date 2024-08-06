@@ -35,6 +35,33 @@ const API_ENDPOINT = {
     // Custom request
     GET_ALL: '/all',
   },
+
+  PRODUCT_TYPES: {
+    PATH: '/api/product-types', // The default in index.js
+    CREATE: '/',
+    READ: '/',
+    UPDATE: '/:id',
+    DELETE: '/:id',
+    ID: '/:id',
+  },
+
+  PRODUCTS: {
+    PATH: '/api/products', // The default in index.js
+    CREATE: '/',
+    READ: '/',
+    UPDATE: '/:id',
+    DELETE: '/:id',
+    ID: '/:id',
+  },
+
+  COMPETITORS: {
+    PATH: '/api/competitors', // The default in index.js
+    CREATE: '/',
+    READ: '/',
+    UPDATE: '/:id',
+    DELETE: '/:id',
+    ID: '/:id',
+  },
 };
 
 export { API_ENDPOINT };

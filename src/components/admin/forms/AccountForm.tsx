@@ -1,21 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  addAccountSchema,
-  updateAccountSchema,
-} from '@/shared/schema/accountSchema';
-import { FormInputText } from '@/components/defaults/FormInputText';
-import { FormInputPassword } from '@/components/defaults/FormInputPassword';
+
+import { FormInputText } from '@/components/defaults/forms/FormInputText';
+import { FormInputPassword } from '@/components/defaults/forms/FormInputPassword';
 import { Button } from '@/components/ui/button';
 import { useCustomToast } from '@/shared/hooks/useCustomToast';
 import { TOAST_TYPE } from '@/shared/constants/TOAST';
 import { ErrorResponse } from '@/shared/interface/ErrorType';
 import { Form } from '@/components/ui/form';
-import FormDropdown from '@/components/defaults/FormDropdown';
+import FormDropdown from '@/components/defaults/forms/FormDropdown';
 import { POSITION, ROLES } from '@/shared/constants/ROLES';
 import { useEffect } from 'react';
-import { AccountFormType } from '@/shared/interface/DialogFormType';
 import {
   useCreateUserMutation,
   useUpdateUserMutation,
@@ -23,12 +19,17 @@ import {
 import { useDispatch } from 'react-redux';
 import { setRefetchData } from '@/shared/lib/features/paginationSlice';
 import { useGetAllBranchesQuery } from '@/pages/api/branchApiSlice';
+import { AccountFormProps } from '@/shared/interface/DialogFormType';
+import {
+  addAccountSchema,
+  updateAccountSchema,
+} from '@/shared/schema/accountSchema';
 
 type FormData =
   | z.infer<typeof addAccountSchema>
   | z.infer<typeof updateAccountSchema>;
 
-export function AccountForm({ setShowDialog, user }: AccountFormType) {
+export function AccountForm({ setShowDialog, user }: AccountFormProps) {
   const { showToast } = useCustomToast();
 
   const [createUser] = useCreateUserMutation();
@@ -47,8 +48,8 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
       contact: user?.contact ?? '',
       username: user?.username ?? '',
       roles: user?.roles ?? undefined,
-      position: user?.position ?? undefined,
-      branch: user?.branch ?? undefined,
+      position: user?.position == '' ? undefined : user?.position,
+      branch: user?.branch == '' ? undefined : user?.branch,
       plateNumber: user?.plateNumber ?? undefined,
     },
   });
@@ -61,12 +62,13 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
   const plateNumber = accountForm.watch('plateNumber'); // Watch the role field
 
   // Fetching branch
-  const { data: branchesData } = useGetAllBranchesQuery(
-    undefined, // or any required params
-    {
-      skip: !roles || roles !== ROLES.Staff, // Skip query if role is null or undefined
-    }
-  );
+  const { data: branchesData, isSuccess: isBranchesDataSuccess } =
+    useGetAllBranchesQuery(
+      undefined, // or any required params
+      {
+        skip: !roles || roles !== ROLES.Staff, // Skip query if role is null or undefined
+      }
+    );
 
   useEffect(() => {
     clearErrors(['position', 'branch', 'plateNumber']);
@@ -83,15 +85,16 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
         const result = await createUser(data).unwrap();
         // Success message toast
         showToast(TOAST_TYPE.SUCCESS, result.message);
-        setShowDialog(false);
         dispatch(setRefetchData());
+        setShowDialog(false);
       } else {
         const result = await updateUser({
           id: user._id,
           updates: data,
         }).unwrap();
         showToast(TOAST_TYPE.SUCCESS, result?.message);
-        // dispatch(setRefetchData());
+        dispatch(setRefetchData());
+        setShowDialog(false);
       }
 
       // Else update user
@@ -112,12 +115,11 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
   const roleAddedFieldSubmittable =
     position === undefined && branch === undefined && plateNumber === undefined;
 
+  const branchChoices = branchesData?.data?.branches || [];
+
   return (
     <Form {...accountForm}>
-      <form
-        onSubmit={accountForm.handleSubmit(onSubmit)}
-        className="w-full grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
+      <form onSubmit={accountForm.handleSubmit(onSubmit)} className="space-y-4">
         <FormInputText
           label="First Name"
           control={accountForm.control}
@@ -177,13 +179,13 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
           />
         )}
 
-        {roles === ROLES.Staff && branchesData && (
+        {roles === ROLES.Staff && isBranchesDataSuccess && branchChoices && (
           <FormDropdown
             control={accountForm.control}
             name="branch"
             label="Branch"
             placeholder="Select a branch"
-            choices={branchesData.data}
+            choices={branchChoices}
             config={{ displayField: 'branchName', valueField: '_id' }}
           />
         )}
@@ -198,7 +200,7 @@ export function AccountForm({ setShowDialog, user }: AccountFormType) {
         )}
 
         <Button
-          className="w-full mt-2 md:col-span-2"
+          className="w-full"
           type="submit"
           disabled={
             Object.keys(accountForm?.formState.errors || {}).length > 0 ||

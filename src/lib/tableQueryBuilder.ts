@@ -21,8 +21,6 @@ export const buildQueryString = ({
     .join('&');
 
   // Construct the sorting query string
-  console.log('sorting: ', sorting.name);
-  console.log('sorting: ', sorting.order);
   const sortingParams =
     sorting.name && sorting.order
       ? `sortField=${sorting.name}&sortOrder=${sorting.order}`

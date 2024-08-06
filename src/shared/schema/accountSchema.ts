@@ -1,33 +1,8 @@
 import { z, ZodObject } from 'zod';
 import { POSITION, ROLES } from '../constants/ROLES';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const accountRoleValidations = (schema: ZodObject<any, any, any, any>) =>
-  schema.superRefine((data, ctx) => {
-    if (data.roles === ROLES.InternalUser && !data.position) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['position'],
-        message: 'Position is required for Internal Users',
-      });
-    }
-    if (data.roles === ROLES.Staff && !data.branch) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['branch'],
-        message: 'Branch is required for Staff',
-      });
-    }
-    if (data.roles === ROLES.Driver && !data.plateNumber) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['plateNumber'],
-        message: 'Plate number is required for Drivers',
-      });
-    }
-  });
-
-export const baseAccountSchema = z.object({
+// Define the common account validation schema
+const baseAccountSchema = z.object({
   firstname: z
     .string()
     .min(2, 'Must have at least 2 characters')
@@ -41,7 +16,7 @@ export const baseAccountSchema = z.object({
     .min(2, 'Must have at least 2 characters') // Adjusted to 2 characters
     .regex(
       /^[a-zA-Z0-9_]+$/,
-      'Username can only contain letters, numbers, and blank'
+      'Username can only contain letters, numbers, and blanks'
     ),
   email: z.string().email('Invalid email address'),
   contact: z
@@ -74,17 +49,57 @@ export const baseAccountSchema = z.object({
       'Plate number must be in the format LLL-DDDD Ex. (ABC-1234)'
     )
     .optional(),
-  //branch: { type: Schema.Types.ObjectId, ref: 'Branch' },
-
-  // Driver
-  // plate_number: { type: String },
-  // license_number: { type: String },
 });
 
-// Add form
+// Function to validate account roles
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const accountRoleValidations = (schema: ZodObject<any, any, any, any>) =>
+  schema.superRefine((data, ctx) => {
+    if (data.roles === ROLES.InternalUser && !data.position) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['position'],
+        message: 'Position is required for Internal Users',
+      });
+    }
+    if (data.roles === ROLES.Staff && !data.branch) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['branch'],
+        message: 'Branch is required for Staff',
+      });
+    }
+    if (data.roles === ROLES.Driver && !data.plateNumber) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['plateNumber'],
+        message: 'Plate number is required for Drivers',
+      });
+    }
+  });
+
+// Add account schema with role validation
 export const addAccountSchema = accountRoleValidations(baseAccountSchema);
 
+// Base schema for updating an account, excluding password
 const baseUpdateSchema = baseAccountSchema.omit({ password: true });
 
-// Update form
+// Update account schema with role validation
 export const updateAccountSchema = accountRoleValidations(baseUpdateSchema);
+
+// Table account schema
+export const tableAccountSchema = z.object({
+  _id: z.string(),
+  firstname: z.string(),
+  lastname: z.string(),
+  email: z.string(),
+  contact: z.string(),
+  roles: z.string(),
+  status: z.string(),
+  username: z.string(),
+  position: z.string().nullable(),
+  branch: z.string().nullable(),
+  plateNumber: z.string().nullable(),
+});
+
+export type TableAccount = z.infer<typeof tableAccountSchema>;

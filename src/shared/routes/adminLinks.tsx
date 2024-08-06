@@ -19,7 +19,6 @@ import { DashboardPage } from '@/pages/Admin/Dashboard';
 import { AccountPage } from '@/pages/Admin/Account';
 import { ShiftPage } from '@/pages/Admin/Shift';
 import { DeliveriesPage } from '@/pages/Admin/Deliveries';
-import { ProductListPage } from '@/pages/Admin/ProductList';
 import { ProductTypePage } from '@/pages/Admin/ProductType';
 import { BranchPage } from '@/pages/Admin/Branch';
 import { StocksPage } from '@/pages/Admin/Stocks';
@@ -29,6 +28,7 @@ import { PriceBoardPage } from '@/pages/Admin/PriceBoard';
 import { ReportsPage } from '@/pages/Admin/Reports';
 import ProtectedRoute from '@/components/ProtectedRoutes';
 import { ROLES } from '../constants/ROLES';
+import { ProductsPage } from '@/pages/Admin/Products';
 
 const adminPath = `/${ROUTES.INTERNAL_USER.PATH}`;
 
@@ -63,7 +63,7 @@ export const adminRoutes: RouteObject[] = [
       },
       {
         path: ROUTES.INTERNAL_USER.PRODUCT_LIST,
-        element: <ProductListPage />,
+        element: <ProductsPage />,
       },
       {
         path: ROUTES.INTERNAL_USER.PRODUCT_TYPE,

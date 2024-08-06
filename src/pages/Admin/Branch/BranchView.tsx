@@ -46,7 +46,6 @@ export default function BranchView() {
       dispatch(setRefetchData());
     }
   }, [refetchStatus, refetch, dispatch]);
-  console.log('branchesResult: ', branchesResult);
   return (
     <div className="space-y-4 w-full ">
       <div className="flex justify-between">

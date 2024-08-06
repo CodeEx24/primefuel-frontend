@@ -82,4 +82,16 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary;
   }
+
+  ::-webkit-file-upload-button {
+    @apply text-foreground opacity-70 cursor-pointer;
+  }
+
+  .text-error {
+    @apply text-sm font-medium text-destructive;
+  }
+
+  /* ::file-selector-button {
+    @apply text-foreground opacity-70;
+  } */
 }

@@ -8,6 +8,7 @@ export const locationsApiSlice = apiSlice.injectEndpoints({
     // Get Users
     getRegions: builder.query({
       query: () => `${locationsPath}${API_ENDPOINT.LOCATIONS.GET_REGION}`,
+      providesTags: ['Region'], // Add tags for caching
     }),
     // Get Provinces
     getProvinces: builder.query({
@@ -16,6 +17,7 @@ export const locationsApiSlice = apiSlice.injectEndpoints({
           ':region',
           region
         )}`,
+      providesTags: (_, __, region) => [{ type: 'Province', id: region }], // Add tags with region id
     }),
     // Get Municipalities
     getMunicipalities: builder.query({
@@ -24,6 +26,9 @@ export const locationsApiSlice = apiSlice.injectEndpoints({
           ':region',
           region
         ).replace(':province', province)}`,
+      providesTags: (_, __, { region, province }) => [
+        { type: 'Municipality', id: `${region}-${province}` },
+      ], // Add tags with combined region and province id
     }),
     // Get Barangays
     getBarangays: builder.query({
@@ -34,6 +39,9 @@ export const locationsApiSlice = apiSlice.injectEndpoints({
         )
           .replace(':province', province)
           .replace(':municipality', municipality)}`,
+      providesTags: (_, __, { region, province, municipality }) => [
+        { type: 'Barangay', id: `${region}-${province}-${municipality}` },
+      ], // Add tags with combined region, province, and municipality id
     }),
   }),
 });

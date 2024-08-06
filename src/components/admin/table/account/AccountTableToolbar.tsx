@@ -7,10 +7,11 @@ import { DataTableFacetedFilter } from '@/components/defaults/table/DataTableFac
 import { DataTableViewOptions } from '@/components/defaults/table/DataTableViewOptions';
 import { useDispatch } from 'react-redux';
 import { setFilters } from '@/shared/lib/features/paginationSlice';
-import { AddAccountDialog } from '../../dialog/AddAcountDialog';
 import { debounce } from '@/lib/debounce';
 import { useMemo, useState } from 'react';
 import { accountFilterConfig, facetConfig } from './AccountTableConfig';
+import { AddEntityButton } from '../../button/AddEntityButton';
+import { AccountForm } from '../../forms/AccountForm';
 
 interface AccountTableToolbarProps<TData> {
   table: Table<TData>;
@@ -75,7 +76,12 @@ export function AccountTableToolbar<TData>({
         )}
         <div className="flex gap-2">
           <DataTableViewOptions table={table} />
-          <AddAccountDialog />
+          <AddEntityButton
+            FormComponent={AccountForm}
+            buttonLabel="Add Account"
+            dialogTitle="Add Account"
+            dialogDescription="Add the account details below by changing values."
+          />
         </div>
       </div>
     </>

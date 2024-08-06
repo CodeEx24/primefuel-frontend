@@ -23,7 +23,7 @@ export default function AccountView() {
   const sorting = useSelector(getSorting);
   const refetchStatus = useSelector(getRefetchStatus);
 
-  const { data: users, refetch } = useGetUsersQuery({
+  const { data: usersDetails, refetch } = useGetUsersQuery({
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
     filters: filters,
@@ -31,16 +31,16 @@ export default function AccountView() {
   });
 
   useEffect(() => {
-    if (users?.data?.users) {
+    if (usersDetails?.data?.users) {
       dispatch(
         setPaginationDetails({
-          pagination: users.data.pagination,
-          pageCount: users.data.pageCount,
-          totalRecords: users.data.totalRecords,
+          pagination: usersDetails.data.pagination,
+          pageCount: usersDetails.data.pageCount,
+          totalRecords: usersDetails.data.totalRecords,
         })
       );
     }
-  }, [users, dispatch]);
+  }, [usersDetails, dispatch]);
 
   useEffect(() => {
     if (refetchStatus) {
@@ -59,7 +59,7 @@ export default function AccountView() {
       <div className="">
         <DataTable
           columns={accountColumns}
-          data={users?.data?.users || []}
+          data={usersDetails?.data?.users || []}
           ToolbarComponent={AccountTableToolbar}
         />
       </div>

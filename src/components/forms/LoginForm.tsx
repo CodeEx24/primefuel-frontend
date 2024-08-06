@@ -1,6 +1,6 @@
 import { Form } from '../ui/form';
-import { FormInputText } from '../defaults/FormInputText';
-import { FormInputPassword } from '../defaults/FormInputPassword';
+import { FormInputText } from '../defaults/forms/FormInputText';
+import { FormInputPassword } from '../defaults/forms/FormInputPassword';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { useForm } from 'react-hook-form';

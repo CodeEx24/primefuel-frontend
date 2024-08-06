@@ -1,21 +1,65 @@
+import { productTypesColumns } from '@/components/admin/table/productTypes/ProductTypesTableConfig';
+import { ProductTypesTableToolbar } from '@/components/admin/table/productTypes/ProductTypesTableToolbar';
+import { DataTable } from '@/components/defaults/table/DataTable';
 import Typography from '@/components/defaults/Typography';
-import { Input } from '@/components/ui/input';
+import { useGetProductTypesQuery } from '@/pages/api/productTypesApiSlice';
+import {
+  getFilters,
+  getPagination,
+  getRefetchStatus,
+  getSorting,
+  setPaginationDetails,
+  setRefetchData,
+} from '@/shared/lib/features/paginationSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function ProductTypeView() {
+  const dispatch = useDispatch();
+  const pagination = useSelector(getPagination);
+  const filters = useSelector(getFilters);
+  const sorting = useSelector(getSorting);
+  const refetchStatus = useSelector(getRefetchStatus);
+
+  const { data: productTypesDetails, refetch } = useGetProductTypesQuery({
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    filters: filters,
+    sorting: sorting,
+  });
+
+  useEffect(() => {
+    if (productTypesDetails?.data?.productTypes) {
+      dispatch(
+        setPaginationDetails({
+          pagination: productTypesDetails.data.pagination,
+          pageCount: productTypesDetails.data.pageCount,
+          totalRecords: productTypesDetails.data.totalRecords,
+        })
+      );
+    }
+  }, [productTypesDetails, dispatch]);
+
+  useEffect(() => {
+    if (refetchStatus) {
+      refetch();
+      dispatch(setRefetchData());
+    }
+  }, [refetchStatus, refetch, dispatch]);
+
   return (
-    <div className="space-y-4 w-full">
-      <Typography variant="heading3" tag="h3">
-        Product Type
-      </Typography>
-      <div className="md:flex  justify-between w-full space-y-2 md:space-y-0 md:gap-4">
-        <Input
-          placeholder="Search"
-          className="text-foreground w-full md:w-4/12"
-        ></Input>
-        <div className="md:flex space-y-2 md:space-y-0 md:gap-4 md:w-8/12">
-          <Input placeholder="Branch" className="text-foreground"></Input>
-          <Input placeholder="Product" className="text-foreground"></Input>
-        </div>
+    <div className="space-y-4 w-full ">
+      <div className="flex justify-between">
+        <Typography variant="heading3" tag="h3">
+          Product Types
+        </Typography>
+      </div>
+      <div className="">
+        <DataTable
+          columns={productTypesColumns}
+          data={productTypesDetails?.data?.productTypes || []}
+          ToolbarComponent={ProductTypesTableToolbar}
+        />
       </div>
     </div>
   );

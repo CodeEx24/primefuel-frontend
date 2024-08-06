@@ -30,7 +30,6 @@ const SelectProvince: React.FC<SelectProvinceProps> = ({
   const matchedItem = items.find(
     (item: { name: string; code: string }) => item.name === fieldValue.region
   );
-  console.log('matchedItem: ', matchedItem);
   return (
     <div>
       {provinces && items.length > 0 && (

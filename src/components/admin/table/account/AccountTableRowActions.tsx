@@ -9,20 +9,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { tableAccountSchema } from '@/shared/schema/table/admin/accountSchema';
 import { STATUS } from '@/shared/constants/ROLES';
-import {
-  useGetUserByIdQuery,
-  useUpdateUserMutation,
-} from '@/pages/api/usersApiSlice';
+import { useUpdateUserMutation } from '@/pages/api/usersApiSlice';
 import { ErrorResponse } from '@/shared/interface/ErrorType';
 import { TOAST_TYPE } from '@/shared/constants/TOAST';
 import { useCustomToast } from '@/shared/hooks/useCustomToast';
 import { useDispatch } from 'react-redux';
 import { setRefetchData } from '@/shared/lib/features/paginationSlice';
-import { DialogTemplate } from '../../dialog/DialogTemplate';
 import { AccountForm } from '../../forms/AccountForm';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { ResponsiveDialog } from '@/components/defaults/ResponsiveDialog';
+import { tableAccountSchema } from '@/shared/schema/accountSchema';
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -31,31 +28,13 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const [userId, setUserId] = useState<string | null>(null); // Initialize with null
-
   const { showToast } = useCustomToast();
   const dispatch = useDispatch();
   const account = tableAccountSchema.parse(row.original);
 
-  const [isShowing, setIsShowing] = useState(false);
+  const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+
   const [updateUser] = useUpdateUserMutation();
-  const { data: userData, refetch } = useGetUserByIdQuery(userId ?? '', {
-    skip: !userId, // Skip query if userId is null or empty
-  });
-
-  useEffect(() => {
-    if (isShowing) {
-      setUserId(account._id);
-    } else {
-      setUserId(null); // Reset userId when dialog is closed
-    }
-  }, [isShowing, account]);
-
-  useEffect(() => {
-    if (userId && isShowing) {
-      refetch();
-    }
-  }, [userId, refetch, isShowing]);
 
   const handleClick = async (value: string) => {
     try {
@@ -80,50 +59,58 @@ export function DataTableRowActions<TData>({
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted text-foreground"
-        >
-          <DotsHorizontalIcon className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        {account.status === STATUS.Pending && (
-          <>
-            <DropdownMenuItem
-              className="flex items-center gap-2"
-              onClick={() => handleClick('Approved')}
-            >
-              {STATUS.Approved}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="flex items-center gap-2"
-              onClick={() => handleClick('Rejected')}
-            >
-              {STATUS.Rejected}
-            </DropdownMenuItem>
-          </>
-        )}
-        <hr />
+    <>
+      <ResponsiveDialog
+        isOpen={isUpdateOpen}
+        setIsOpen={setIsUpdateOpen}
+        title="Edit User"
+        description="Update the user details below by changing values."
+      >
+        <AccountForm setShowDialog={setIsUpdateOpen} user={account} />
+      </ResponsiveDialog>
 
-        <DialogTemplate
-          label="Update"
-          title="Update user account"
-          description="Fill in the form below to create a new user account. Ensure all required fields are completed accurately."
-          isOpen={isShowing}
-          setShowDialog={setIsShowing}
-          isButton={false}
-        >
-          {isShowing && userData?.data && (
-            <AccountForm setShowDialog={setIsShowing} user={userData.data} />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted text-foreground"
+          >
+            <DotsHorizontalIcon className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[160px]">
+          {account.status === STATUS.Pending && (
+            <>
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={() => handleClick('Approved')}
+              >
+                {STATUS.Approved}
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={() => handleClick('Rejected')}
+              >
+                {STATUS.Rejected}
+              </DropdownMenuItem>
+            </>
           )}
-        </DialogTemplate>
+          <hr />
 
-        <DropdownMenuItem>Delete</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {/* FOR RESPONSIVE DIALOG */}
+          <DropdownMenuItem
+            className="flex items-center gap-2"
+            onClick={() => {
+              setIsUpdateOpen(true);
+            }}
+          >
+            Edit
+          </DropdownMenuItem>
+
+          {/* <DropdownMenuItem>Delete</DropdownMenuItem> */}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 }

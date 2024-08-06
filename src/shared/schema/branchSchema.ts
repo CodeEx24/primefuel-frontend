@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
-export const addBranchSchema = z.object({
-  _id: z.string().optional(), // Optional _id field
+// Base branch schema
+const baseBranchSchema = z.object({
   branchName: z
     .string()
     .min(4, 'Must have at least 4 characters')
     .regex(/^[a-zA-Z ]+$/, 'First Name can only contain letters and spaces'),
-  // Should be validated with proper location
   region: z.string().min(1, 'Must have a region selected'),
   province: z.string().min(1, 'Must have a province selected'),
   municipality: z.string().min(1, 'Must have a municipality selected'),
@@ -26,3 +25,13 @@ export const addBranchSchema = z.object({
         )
     ), // Optional: for 3-digit hex codes
 });
+
+// Add branch schema
+export const branchSchema = baseBranchSchema;
+
+// Table branch schema
+export const tableBranchSchema = baseBranchSchema.extend({
+  _id: z.string(),
+});
+
+export type TableBranch = z.infer<typeof tableBranchSchema>;
