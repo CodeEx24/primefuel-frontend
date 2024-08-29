@@ -14,11 +14,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const user = useSelector(selectCurrentUser);
   // Check for user and role validation
-  if (user?.roles && user.roles.some((role) => allowedRoles.includes(role))) {
+  if (user?.role && allowedRoles.includes(user.role)) {
     return <>{children}</>;
   }
 
-  return <Navigate to="/login" />;
+  return <Navigate to="/" />;
 };
 
 export default ProtectedRoute;

@@ -1,7 +1,7 @@
 import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons';
 import { Column } from '@tanstack/react-table';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +20,10 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { useDispatch } from 'react-redux';
-import { setFilters } from '@/shared/lib/features/paginationSlice';
+import {
+  setFilters,
+  setPageIndex,
+} from '@/shared/lib/features/paginationSlice';
 import { useEffect } from 'react';
 
 interface DataTableFacetedFilterProps<TData, TValue> {
@@ -42,14 +45,14 @@ export function DataTableFacetedFilter<TData, TValue>({
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
   const dispatch = useDispatch();
+  // Extract values for dependencies
+  const filterValue = column?.getFilterValue() as string;
+  const titleVal = title?.toLowerCase() ?? '';
 
   useEffect(() => {
-    const value = column?.getFilterValue() as string;
-    const titleVal = title?.toLowerCase() ?? '';
-    if (title) {
-      dispatch(setFilters({ title: titleVal, value }));
-    }
-  }, [column, dispatch, title, facets]);
+    dispatch(setPageIndex({ pageIndex: 1 }));
+    dispatch(setFilters({ title: titleVal, value: filterValue }));
+  }, [filterValue, dispatch, titleVal, facets, column]);
 
   return (
     <Popover>

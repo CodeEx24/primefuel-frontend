@@ -10,13 +10,13 @@ import { z } from 'zod';
 import { ROUTES } from '@/shared/constants/ROUTES';
 import { TOAST_TYPE } from '@/shared/constants/TOAST';
 import { useDispatch } from 'react-redux';
-import { ROLES } from '@/shared/constants/ROLES';
+import { Role, ROLES } from '@/shared/constants/ROLES';
 import { setCredentials } from '@/shared/lib/features/authSlice';
 import { useLoginMutation } from '@/pages/api/authApiSlice';
 import { useCustomToast } from '@/shared/hooks/useCustomToast';
 import { ErrorResponse } from '@/shared/interface/ErrorType';
 
-export default function LoginForm() {
+export default function LoginForm({ role }: { role: Role | undefined }) {
   const { showToast } = useCustomToast();
   const navigate = useNavigate();
 
@@ -30,13 +30,21 @@ export default function LoginForm() {
       password: '',
     },
   });
-
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    console.log('DATA: ', data, role);
     try {
-      const userData = await login(data).unwrap();
-      dispatch(setCredentials({ ...userData }));
-      if (userData.user.roles.includes(ROLES.InternalUser)) {
-        navigate('/admin/dashboard');
+      const userData = await login({ ...data, role }).unwrap();
+      await dispatch(setCredentials({ ...userData }));
+      if (userData.user.role === ROLES.Admin) {
+        navigate(`/${ROUTES.ADMIN.PATH}/${ROUTES.ADMIN.DASHBOARD}`);
+      } else if (userData.user.role === ROLES.SuperAdmin) {
+        navigate(`/${ROUTES.SUPER_ADMIN.PATH}/${ROUTES.SUPER_ADMIN.DASHBOARD}`);
+      } else if (userData.user.role === ROLES.Driver) {
+        navigate(`/${ROUTES.DRIVER.PATH}/${ROUTES.DRIVER.DASHBOARD}`);
+      } else if (userData.user.role === ROLES.Staff) {
+        navigate(`/${ROUTES.STAFF.PATH}/${ROUTES.STAFF.DASHBOARD}`);
+      } else if (userData.user.role === ROLES.Owner) {
+        navigate(`/${ROUTES.OWNER.PATH}/${ROUTES.OWNER.DASHBOARD}`);
       }
     } catch (error: unknown) {
       const axiosError = error as ErrorResponse;

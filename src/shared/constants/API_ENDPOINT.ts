@@ -62,6 +62,18 @@ const API_ENDPOINT = {
     DELETE: '/:id',
     ID: '/:id',
   },
+
+  SHIFTS: {
+    PATH: '/api/shifts',
+    CREATE: '/',
+    READ: '/',
+    UPDATE: '/:id',
+    DELETE: '/:id',
+    ID: '/:id',
+
+    // Custom request
+    GET_ALL: '/all',
+  },
 };
 
 export { API_ENDPOINT };

@@ -25,7 +25,9 @@ export function ResponsiveDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="dark max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-foreground">{title}</DialogTitle>
+          <DialogTitle className="text-foreground text-2xl">
+            {title}
+          </DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
         {children}

@@ -13,11 +13,11 @@ const ProtectedAuthRoutes: React.FC<ProtectedAuthRoutesProps> = ({
 }) => {
   const user = useSelector(selectCurrentUser);
   if (user) {
-    if (user.roles.includes(ROLES.InternalUser)) {
+    if (user.role === ROLES.SuperAdmin) {
       // Redirect to a different page if the user is already logged in
       return (
         <Navigate
-          to={`/${ROUTES.INTERNAL_USER.PATH}/${ROUTES.INTERNAL_USER.DASHBOARD}`}
+          to={`/${ROUTES.SUPER_ADMIN.PATH}/${ROUTES.SUPER_ADMIN.DASHBOARD}`}
         />
       );
     } else {

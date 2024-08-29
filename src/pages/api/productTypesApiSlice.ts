@@ -1,4 +1,4 @@
-import { buildQueryString } from '@/lib/tableQueryBuilder';
+import { buildQueryString } from '@/shared/lib/tableQueryBuilder';
 import { apiSlice } from '@/pages/api/apiSlice';
 import { API_ENDPOINT } from '@/shared/constants/API_ENDPOINT';
 import { QueryParams } from '@/shared/interface/TableType';

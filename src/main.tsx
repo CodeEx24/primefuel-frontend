@@ -6,7 +6,7 @@ import { Toaster } from './components/ui/toaster.tsx';
 
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from '@/lib/store.ts'; // Path to your updated store file
+import { persistor, store } from './shared/lib/store.ts';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

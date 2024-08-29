@@ -1,5 +1,5 @@
 import { z, ZodObject } from 'zod';
-import { POSITION, ROLES } from '../constants/ROLES';
+import { ROLES } from '../constants/ROLES';
 
 // Define the common account validation schema
 const baseAccountSchema = z.object({
@@ -32,16 +32,27 @@ const baseAccountSchema = z.object({
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/\d/, 'Password must contain at least one number')
-    .regex(/[^\w\s]*/, 'Password must contain at least one special character'),
-  roles: z.enum([ROLES.InternalUser, ROLES.Driver, ROLES.Staff], {
-    required_error: 'Please select a role',
-  }),
-  position: z
-    .enum([POSITION.Admin, POSITION.President, POSITION.SuperAdmin], {
-      required_error: 'Please select a position',
-    })
-    .optional(),
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      'Password must contain at least one special character'
+    ),
+  role: z.enum(
+    [ROLES.Admin, ROLES.Owner, ROLES.SuperAdmin, ROLES.Driver, ROLES.Staff],
+    {
+      required_error: 'Please select a role',
+    }
+  ),
   branch: z.string().optional(), // Should be validated in backend
+  branches: z
+    .array(
+      z
+        .object({
+          branchesId: z.string().nullable(), // Ensure branchesId is not empty
+        })
+        .nullable()
+    )
+    .nullable()
+    .optional(),
   plateNumber: z
     .string()
     .regex(
@@ -55,26 +66,39 @@ const baseAccountSchema = z.object({
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const accountRoleValidations = (schema: ZodObject<any, any, any, any>) =>
   schema.superRefine((data, ctx) => {
-    if (data.roles === ROLES.InternalUser && !data.position) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['position'],
-        message: 'Position is required for Internal Users',
-      });
-    }
-    if (data.roles === ROLES.Staff && !data.branch) {
+    if (data.role === ROLES.Staff && !data.branch) {
       ctx.addIssue({
         code: 'custom',
         path: ['branch'],
         message: 'Branch is required for Staff',
       });
     }
-    if (data.roles === ROLES.Driver && !data.plateNumber) {
+
+    if (data.role === ROLES.Driver && !data.plateNumber) {
       ctx.addIssue({
         code: 'custom',
         path: ['plateNumber'],
         message: 'Plate number is required for Drivers',
       });
+    }
+
+    if (data.role === ROLES.Admin || data.role === ROLES.Owner) {
+      if (data.branches) {
+        data.branches.forEach(
+          (branch: { branchesId: string }, index: number) => {
+            if (
+              branch &&
+              (branch.branchesId === null || branch.branchesId === '')
+            ) {
+              ctx.addIssue({
+                code: 'custom',
+                path: ['branches', index, 'branchesId'],
+                message: 'Branches ID must be a non-null string',
+              });
+            }
+          }
+        );
+      }
     }
   });
 
@@ -94,11 +118,20 @@ export const tableAccountSchema = z.object({
   lastname: z.string(),
   email: z.string(),
   contact: z.string(),
-  roles: z.string(),
+  role: z.string(),
   status: z.string(),
   username: z.string(),
-  position: z.string().nullable(),
   branch: z.string().nullable(),
+  branches: z
+    .array(
+      z
+        .object({
+          branchesId: z.string().nullable(), // Ensure branchesId is not empty
+        })
+        .nullable()
+    )
+    .nullable()
+    .optional(),
   plateNumber: z.string().nullable(),
 });
 

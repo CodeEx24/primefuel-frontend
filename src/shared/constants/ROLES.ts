@@ -1,6 +1,8 @@
 // lib/constants/roles.ts
 export const ROLES = {
-  InternalUser: 'InternalUser',
+  Admin: 'Admin',
+  SuperAdmin: 'SuperAdmin',
+  Owner: 'Owner',
   Driver: 'Driver',
   Staff: 'Staff',
 } as const;

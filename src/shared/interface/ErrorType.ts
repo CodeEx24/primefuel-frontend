@@ -2,6 +2,10 @@ export interface ErrorResponse {
   response?: {
     status: number;
   };
+  data?: {
+    success: boolean;
+    message: string;
+  };
 }
 
 export interface RootError {

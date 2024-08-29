@@ -1,4 +1,4 @@
-import { buildQueryString } from '@/lib/tableQueryBuilder';
+import { buildQueryString } from '@/shared/lib/tableQueryBuilder';
 import { apiSlice } from '@/pages/api/apiSlice';
 import { API_ENDPOINT } from '@/shared/constants/API_ENDPOINT';
 import { QueryParams } from '@/shared/interface/TableType';
@@ -36,6 +36,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         body: updates,
       }),
     }),
+
+    deleteUser: builder.mutation({
+      query: ({ id, updates }) => ({
+        url: `${usersPath}${API_ENDPOINT.USERS.DELETE.replace(':id', id)}`,
+        method: 'DELETE', // Use PUT or PATCH for updates
+        body: updates,
+      }),
+    }),
   }),
 });
 
@@ -44,6 +52,7 @@ export const {
   useGetUserByIdQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
+  useDeleteUserMutation,
   // useUpdateUserMutation,
   // useDeleteUserMutation,
 } = usersApiSlice;

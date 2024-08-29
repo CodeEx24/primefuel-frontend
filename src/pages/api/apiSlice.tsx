@@ -15,8 +15,13 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
 
+const baseUrl =
+  import.meta.env.NODE_ENV === 'production'
+    ? import.meta.env.VITE_PROD_BACKEND_URL
+    : import.meta.env.VITE_DEV_BACKEND_URL;
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:4000',
+  baseUrl: baseUrl,
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const state = getState() as { auth: AuthState };
@@ -119,6 +124,7 @@ export const apiSlice = createApi({
     'Product Types',
     'Product',
     'Competitor',
+    'Shift',
   ],
   endpoints: () => ({}),
 });

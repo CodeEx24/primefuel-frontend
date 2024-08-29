@@ -1,0 +1,16 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm run build
+
+build project:
+  image: node:22-alpine
+  script:
+    - npm install
+    - npm run build

@@ -1,7 +1,7 @@
-import { Outlet } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
-import AdminSidebar from '@/components/admin/Sidebar';
-import AdminMobileSidebar from '@/components/admin/MobileSidebar';
+import AdminMobileSidebar from '@/components/userBaseComponent/admin/layout/MobileSidebar';
+import AdminSidebar from '@/components/userBaseComponent/admin/layout/Sidebar';
+import { Outlet } from 'react-router-dom';
 
 export default function AdminLayout() {
   return (

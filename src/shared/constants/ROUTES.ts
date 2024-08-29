@@ -5,8 +5,8 @@ export const ROUTES = {
     REGISTER: '/register',
     FORGOT_PASSWORD: '/forgot-password',
   },
-  INTERNAL_USER: {
-    PATH: 'admin',
+  SUPER_ADMIN: {
+    PATH: 'super-admin',
     DASHBOARD: 'dashboard',
     ACCOUNT: 'account',
     SHIFT: 'shift',
@@ -19,5 +19,22 @@ export const ROUTES = {
     COMPETITOR: 'competitor',
     CONVERSION: 'conversion',
     PRICE_BOARD: 'price-board',
+  },
+  ADMIN: {
+    PATH: 'admin',
+    DASHBOARD: 'dashboard',
+    REQUEST_ORDER: 'request-order',
+  },
+  STAFF: {
+    PATH: 'staff',
+    DASHBOARD: 'dashboard',
+  },
+  DRIVER: {
+    PATH: 'driver',
+    DASHBOARD: 'dashboard',
+  },
+  OWNER: {
+    PATH: 'owner',
+    DASHBOARD: 'dashboard',
   },
 };

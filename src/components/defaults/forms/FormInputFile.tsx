@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import Typography from '../Typography';
 
 type FormInputFileType = {
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   logo: string;
   label: string;
   placeholder?: string;

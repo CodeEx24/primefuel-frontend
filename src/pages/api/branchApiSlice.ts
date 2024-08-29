@@ -1,4 +1,4 @@
-import { buildQueryString } from '@/lib/tableQueryBuilder';
+import { buildQueryString } from '@/shared/lib/tableQueryBuilder';
 import { apiSlice } from '@/pages/api/apiSlice';
 import { API_ENDPOINT } from '@/shared/constants/API_ENDPOINT';
 import { QueryParams } from '@/shared/interface/TableType';
@@ -7,8 +7,12 @@ const branchBasePath = API_ENDPOINT.BRANCHES.PATH;
 
 export const branchApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllBranches: builder.query({
-      query: () => `${branchBasePath}${API_ENDPOINT.BRANCHES.READ}`,
+    getBranches: builder.query({
+      query: (data: QueryParams) => {
+        const queryString = buildQueryString(data);
+        return `${branchBasePath}${API_ENDPOINT.BRANCHES.READ}?${queryString}`;
+      },
+      providesTags: (_, __, data: QueryParams) => [{ type: 'Branch', data }],
     }),
     getBranchesById: builder.query({
       query: (id: string) => {
@@ -18,13 +22,7 @@ export const branchApiSlice = apiSlice.injectEndpoints({
         )}`;
       },
     }),
-    getBranches: builder.query({
-      query: (data: QueryParams) => {
-        const queryString = buildQueryString(data);
-        return `${branchBasePath}${API_ENDPOINT.BRANCHES.READ}?${queryString}`;
-      },
-      providesTags: (_, __, data: QueryParams) => [{ type: 'Branch', data }],
-    }),
+
     addBranch: builder.mutation({
       query: (credentials) => ({
         url: `${branchBasePath}${API_ENDPOINT.BRANCHES.CREATE}`,
@@ -46,9 +44,8 @@ export const branchApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetAllBranchesQuery,
-  useGetBranchesByIdQuery,
   useGetBranchesQuery,
+  useGetBranchesByIdQuery,
   useAddBranchMutation,
   useUpdateBranchMutation,
 } = branchApiSlice;
