@@ -1,8 +1,31 @@
 import { DummyChart } from '@/components/userBaseComponent/super-admin/DummyChart';
 import Typography from '@/components/defaults/Typography';
 import { Input } from '@/components/ui/input';
+import { useSelector } from 'react-redux';
+import {
+  getFilters,
+  getPagination,
+  getSorting,
+} from '@/shared/lib/features/paginationSlice';
+import { useGetUsersQuery } from '@/pages/api/usersApiSlice';
+import { useEffect } from 'react';
 
 export default function DashboardView() {
+  const pagination = useSelector(getPagination);
+  const filters = useSelector(getFilters);
+  const sorting = useSelector(getSorting);
+
+  const { data: usersDetails } = useGetUsersQuery({
+    page: pagination.pageIndex,
+    pageSize: pagination.pageSize,
+    filters: filters,
+    sorting: sorting,
+  });
+
+  useEffect(() => {
+    console.log('usersDetails: ', usersDetails);
+  });
+
   return (
     <div className="space-y-4 w-full">
       <Typography variant="heading3" tag="h3" className="text-primary">

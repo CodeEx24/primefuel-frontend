@@ -49,7 +49,7 @@ export default function LoginForm({ role }: { role: Role | undefined }) {
     } catch (error: unknown) {
       const axiosError = error as ErrorResponse;
       if (!axiosError?.response) {
-        showToast(TOAST_TYPE.ERROR, 'No server error response');
+        showToast(TOAST_TYPE.ERROR, 'Invalid email or password');
       } else if (axiosError?.response?.status === 400) {
         showToast(TOAST_TYPE.ERROR, 'Missing email or password!');
       } else if (axiosError?.response?.status === 401) {

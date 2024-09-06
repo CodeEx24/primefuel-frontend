@@ -9,11 +9,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-
-  // server: {
-  //   port: 3000,
-  //   strictPort: true,
-  //   host: true,
-  //   origin: 'http://0.0.0.0:3000',
-  // },
 });
