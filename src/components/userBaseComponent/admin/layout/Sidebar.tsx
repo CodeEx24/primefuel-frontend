@@ -1,8 +1,8 @@
 import { ROUTES } from '@/shared/constants/ROUTES';
 import { Link, useLocation } from 'react-router-dom';
 
-import companyLogo from '@/assets/NetFuel/netfuel-darkmode.png';
-import miniLogo from '@/assets/NetFuel/apple-touch-icon.png';
+import companyLogo from '@/assets/NetFuel/PrimeFuel2.webp';
+import miniLogo from '@/assets/NetFuel/PrimeFuelMini.webp';
 import {
   Tooltip,
   TooltipProvider,

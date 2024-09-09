@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import netFuelLogo from '@/assets/NetFuel/netfuel-darkmode.png';
+import PrimeFuel2 from '@/assets/NetFuel/PrimeFuel2.webp';
 
 interface CardProps {
   title?: string; // The title of the card.
@@ -20,7 +20,7 @@ export default function AuthCard({ title, description, children }: CardProps) {
   return (
     <Card className="w-10/12 max-w-[450px] md:w-[450px]">
       <CardHeader className="pb-4 flex flex-col items-center">
-        <img src={netFuelLogo} alt="Net Fuel Logo" className="h-24 w-52" />
+        <img src={PrimeFuel2} alt="Net Fuel Logo" className=" object-contain" />
         {title && (
           <CardTitle className="text-2xl font-bold text-center">
             {title}

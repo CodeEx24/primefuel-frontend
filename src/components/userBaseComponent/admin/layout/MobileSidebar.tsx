@@ -19,7 +19,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 
-import companyLogo from '@/assets/NetFuel/netfuel-darkmode.png';
+import companyLogo from '@/assets/NetFuel/PrimeFuel2.webp';
 import profileSvg from '@/assets/Profile.svg';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/shared/lib/features/authSlice';

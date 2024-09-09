@@ -21,7 +21,7 @@ import {
 import { superAdminSidebarLinks } from '@/shared/routes/superAdminLinks';
 import Typography from '../../defaults/Typography';
 
-import companyLogo from '@/assets/NetFuel/netfuel-darkmode.png';
+import companyLogo from '@/assets/NetFuel/PrimeFuel2.webp';
 import profileSvg from '@/assets/Profile.svg';
 import { useDispatch } from 'react-redux';
 import { logout } from '@/shared/lib/features/authSlice';
@@ -62,8 +62,8 @@ export default function SuperAdminMobileSidebar() {
         </SheetTrigger>
         <SheetContent side="left" className="dark sm:max-w-xs ">
           <nav className="grid text-lg font-medium ">
-            <Link to="/" className="mb-6 flex justify-center">
-              <img src={companyLogo} alt="Logo" className="h-16 w-36" />
+            <Link to="/" className="mb-6 flex ">
+              <img src={companyLogo} alt="Logo" className="w-60" />
               <span className="sr-only">Acme Inc</span>
             </Link>
             <div className="space-y-2">
